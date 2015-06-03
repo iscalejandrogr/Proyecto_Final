@@ -168,9 +168,9 @@ $(document).on("pageinit","#Principal", function(e, data){
 	  var infoVentanta2=new google.maps.InfoWindow({
 	    position:latlng,
 	    //content:"<p>Tu posicion actual es: </p>"+latlng
-	    content:'<div style="width:200px; height:160px;"><div style="text-align: center; color:#5c041b; font-weight:bolder; font-size:12px; font-family:arial;">' + nombre + '</div><img src="'+ruta+'" width="90" heigth="60" /><div style="text-align:center; color: #2e20b8; font-size:12px; font-family:arial; width:200px; text-align:center;">' + dir + '</div><div>Tel: ' + tel + '</div><div>Email:' + mail + '</div>'
+	    content:'<div style="width:200px; height:160px;"><div style="text-align: center; color:#5c041b; font-weight:bolder; font-size:12px; font-family:arial;">' + nombre + '</div><img src="http://itslmoviles.260mb.net/'+ruta+'" width="90" heigth="60" /><div style="text-align:center; color: #2e20b8; font-size:12px; font-family:arial; width:200px; text-align:center;">' + dir + '</div><div>Tel: ' + tel + '</div><div>Email:' + mail + '</div>'
 	  });
-	  google.maps.event.addListener(marca2, "click", function(){infoVentanta2.open(map,this);});
+	  google.maps.event.addListener(marca2, "click", function(){infoVentanta2.open(map,marca2);});
     }    
  });
 </script>
