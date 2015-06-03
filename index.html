@@ -30,7 +30,7 @@ $(document).on("pageinit","#Principal", function(e, data){
 	      mapTypeId:google.maps.MapTypeId.ROADMAP};
 		  
 	  map= new google.maps.Map(document.getElementById("map-canvas"),miOptions);
-	  obtenerUbicacion();
+	  //obtenerUbicacion();
 	  obtenerMarcas();
 	});
 	
@@ -61,7 +61,7 @@ $(document).on("pageinit","#Principal", function(e, data){
 		
 		$.ajax({
 		  type:"POST",
-		  url:"http://itslmoviles.260mb.net/subirArchivo/guardarServicios.php",
+		  url:"http://itslmoviles.260mb.net/guardarServicios.php",
 		  data:"nombre="+nom+"&dir="+dir+"&tel="+tel+"&email="+email+"&lat="+lat+"&long="+lon,
 		  success: guardandoServicios		  		
 		});
@@ -88,7 +88,7 @@ $(document).on("pageinit","#Principal", function(e, data){
 	options.params = params;
 
 	var ft = new FileTransfer();
-	ft.upload(foto,"http://itslmoviles.260mb.net/subirArchivo/upload.php",function(r){		
+	ft.upload(foto,"http://itslmoviles.260mb.net/upload.php",function(r){		
 		navigator.notification.confirm("El archivo: "+r.response,null, "Notificacion");
 	}, function(err){
 		navigator.notification.alert("Error: "+err.code+" detalle: "+err.response,null, "Error de Envío");
@@ -130,18 +130,18 @@ $(document).on("pageinit","#Principal", function(e, data){
     
         function obtenerMarcas(){
 	  var opciones={maximumAge:500000,enableHighAccuracy:true,timeout:5000};
-	  navigator.geolocation.getCurrentPosition(exito, falla, opciones);
+	  navigator.geolocation.getCurrentPosition(exito2, falla2, opciones);
 	  if(navigator.geolocation){	
-	    function exito(posic){	      	      	         	     
+	    function exito2(posic){		    
 	      $.ajax({
 		type:"POST",
-		url:"http://itslmoviles.260mb.net/subirArchivo/consultaServ.php",
+		url:"http://itslmoviles.260mb.net/consultaServ.php",
 		data:"",
 		success: serviciosConsultados
 	      });	     
 	      
 	      function serviciosConsultados(datos){
-	      alert("si entro: "+datos);
+	      //alert(datos);
 		var respDatos=$.parseJSON(datos); 
 		var nombre, dir, tel, mail, lat, lng, ruta;
 		for(var i in respDatos){		 
@@ -156,19 +156,40 @@ $(document).on("pageinit","#Principal", function(e, data){
 	      }
 	    }
 	 }
-	    function falla(error){
+	    function falla2(error){
 	      alert("Error en el servicio Geolocalizador");
-	      dibujarMarcas(defaultPos);
+	      $.ajax({
+		type:"POST",
+		url:"http://itslmoviles.260mb.net/consultaServ.php",
+		data:"",
+		success: serviciosConsultados2
+	      });	     
+	      
+	      function serviciosConsultados2(datos){
+		var respDatos=$.parseJSON(datos); 
+		var nombre, dir, tel, mail, lat, lng, ruta;
+		for(var i in respDatos){		 
+		  nombre=respDatos[i].Nombre;//Cambiarlos de acuerdo a los campos de su base de datos
+		  dir=respDatos[i].Direccion;
+		  tel=respDatos[i].Telefono;
+		  mail=respDatos[i].Email;
+		  lat=respDatos[i].Latitud; 
+		  lng=respDatos[i].Longitud;
+		  ruta=respDatos[i].Foto;
+		  dibujarMarcas(nombre, dir, tel, mail, lat, lng, ruta);
+	      }
+	    }
 	    }
 	  	      
 	    }else{
-	      dibujarMarcas(defaultPos);
+	    alert("No tiene habiliatda la funcion de Geolocalización");
+	     // dibujarMarcas(defaultPos);
 	    }
 	}
 
 
     function dibujarMarcas(nombre, dir, tel, mail, lat, lng, ruta){//habilitar esta función
-    //function dibujarMarcas(defaultPos, lat, lng){
+ alert("si llego: Lat:"+lat+" Long:"+lng+" ruta: "+ruta );
          var latlng=new google.maps.LatLng(lat,lng);
   	 	  
 	  var marca2=new google.maps.Marker({
