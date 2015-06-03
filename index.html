@@ -16,21 +16,22 @@ $(document).on("pageinit","#Principal", function(e, data){
  var mapa;
  var miOptions;
  var defaultPos;
+ var opciones;
  var marca;
  var infoVentanta;
+ defaultPos=new  google.maps.LatLng(19.463948, -97.686259);
+ opciones={maximumAge:500000,enableHighAccuracy:true,timeout:5000};
  
    document.addEventListener("deviceready", onDeviceReady, false);
     function onDeviceReady(){
-	$("#btnConsServ").tap(function (){//Evento de botón para consultar los servicios de la base de datos
-	 defaultPos=new  google.maps.LatLng(19.463948, -97.686259);
+	$("#btnConsServ").tap(function (){//Evento de botón para consultar los servicios de la base de datos	 
 	    miOptions={
-	      zoom:16,
+	      zoom:8,
 	      center:defaultPos,
 	      disableDefaultUI:true,
 	      mapTypeId:google.maps.MapTypeId.ROADMAP};
 		  
 	  map= new google.maps.Map(document.getElementById("map-canvas"),miOptions);
-	  //obtenerUbicacion();
 	  obtenerMarcas();
 	});
 	
@@ -97,7 +98,6 @@ $(document).on("pageinit","#Principal", function(e, data){
     
     function obtenerUbicacion(){//Funcion que obtiene la Ubicación del dispositivo móvil
     if(navigator.geolocation){	
-      var opciones={maximumAge:500000,enableHighAccuracy:true,timeout:5000};
       navigator.geolocation.getCurrentPosition(exito, falla, opciones);
       
 	  function exito(posic){
@@ -128,11 +128,7 @@ $(document).on("pageinit","#Principal", function(e, data){
 	  }	 
     }	
     
-        function obtenerMarcas(){
-	  var opciones={maximumAge:500000,enableHighAccuracy:true,timeout:5000};
-	  navigator.geolocation.getCurrentPosition(exito2, falla2, opciones);
-	  if(navigator.geolocation){	
-	    function exito2(posic){		    
+        function obtenerMarcas(){	    
 	      $.ajax({
 		type:"POST",
 		url:"http://itslmoviles.260mb.net/consultaServ.php",
@@ -154,37 +150,7 @@ $(document).on("pageinit","#Principal", function(e, data){
 		  ruta=respDatos[i].Foto;
 		  dibujarMarcas(nombre, dir, tel, mail, lat, lng, ruta);
 	      }
-	    }
-	 }
-	    function falla2(error){
-	      alert("Error en el servicio Geolocalizador");
-	      $.ajax({
-		type:"POST",
-		url:"http://itslmoviles.260mb.net/consultaServ.php",
-		data:"",
-		success: serviciosConsultados2
-	      });	     
-	      
-	      function serviciosConsultados2(datos){
-		var respDatos=$.parseJSON(datos); 
-		var nombre, dir, tel, mail, lat, lng, ruta;
-		for(var i in respDatos){		 
-		  nombre=respDatos[i].Nombre;//Cambiarlos de acuerdo a los campos de su base de datos
-		  dir=respDatos[i].Direccion;
-		  tel=respDatos[i].Telefono;
-		  mail=respDatos[i].Email;
-		  lat=respDatos[i].Latitud; 
-		  lng=respDatos[i].Longitud;
-		  ruta=respDatos[i].Foto;
-		  dibujarMarcas(nombre, dir, tel, mail, lat, lng, ruta);
-	      }
-	    }
-	    }
-	  	      
-	    }else{
-	    alert("No tiene habiliatda la funcion de Geolocalización");
-	     // dibujarMarcas(defaultPos);
-	    }
+	    }	
 	}
 
 
@@ -195,14 +161,14 @@ $(document).on("pageinit","#Principal", function(e, data){
 	  var marca2=new google.maps.Marker({
 	      position:latlng,
 	      map:map,
-	      title:"Mi posición",
+	      title:nombre,
 	      animation:google.maps.Animation.DROP
 	  });
 	  
 	  var infoVentanta2=new google.maps.InfoWindow({
 	    position:latlng,
 	    //content:"<p>Tu posicion actual es: </p>"+latlng
-	    content:'<div style="width:200px; height:160px;"><div style="text-align: center; color:#5c041b; font-weight:bolder; font-size:12px; font-family:arial;">' + nombre + '</div><img src="'+ruta+'" width="100" heigth="60" /><div style="text-align:center; color: #2e20b8; font-size:12px; font-family:arial; width:200px; text-align:center;">' + dir + '</div><div>Tel: ' + tel + '</div><div>Email:' + mail + '</div>'
+	    content:'<div style="width:200px; height:160px;"><div style="text-align: center; color:#5c041b; font-weight:bolder; font-size:12px; font-family:arial;">' + nombre + '</div><img src="'+ruta+'" width="90" heigth="60" /><div style="text-align:center; color: #2e20b8; font-size:12px; font-family:arial; width:200px; text-align:center;">' + dir + '</div><div>Tel: ' + tel + '</div><div>Email:' + mail + '</div>'
 	  });
 	  google.maps.event.addListener(marca2, "click", function(){infoVentanta2.open(map,this);});
     }    
