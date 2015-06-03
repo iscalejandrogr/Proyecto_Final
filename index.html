@@ -120,7 +120,7 @@ $(document).on("pageinit","#Principal", function(e, data){
 	  }
 	
 	  function falla(error){
-	      alert("Error en el servicio Geolocalizador");
+	      alert("Error en el servicio Geolocalizador: "+error.code+" detalle: "+error.response);
 	  }
 	  	      
 	  }else{
